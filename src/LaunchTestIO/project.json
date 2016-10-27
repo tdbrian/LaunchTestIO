@@ -34,7 +34,11 @@
     "Microsoft.AspNet.SignalR.Core": "2.2.1",
     "Microsoft.Owin": "3.0.1",
     "Microsoft.AspNetCore.Owin": "1.0.0",
-    "mongocsharpdriver": "2.3.0"
+    "mongocsharpdriver": "2.3.0",
+    "Autofac": "4.1.1",
+    "Autofac.Extensions.DependencyInjection": "4.0.0",
+    "Autofac.SignalR": "3.0.2",
+    "Autofac.Owin": "4.0.0"
   },
 
   "tools": {

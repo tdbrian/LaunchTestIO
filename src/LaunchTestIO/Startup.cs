@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using LaunchTestIO.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,11 +12,17 @@ using Microsoft.Extensions.Logging;
 using Ng2Webpack;
 using Owin;
 using Sector7G.config;
+using Autofac.Integration.SignalR;
+using Microsoft.AspNet.SignalR;
 
 namespace LaunchTestIO
 {
     public class Startup
     {
+        public IContainer ApplicationContainer { get; set; }
+
+        public IConfigurationRoot Configuration { get; }
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -33,10 +43,8 @@ namespace LaunchTestIO
             Configuration = builder.Build();
         }
 
-        public IConfigurationRoot Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
@@ -45,11 +53,21 @@ namespace LaunchTestIO
 
             services.AddWebpack();
 
-            services.AddSingleton<ILaunchTestIoContext, LaunchTestIoContext>();
+            // Add Autofac
+            var containerBuilder = new ContainerBuilder();
+            containerBuilder.RegisterModule<InjectionModule>();
+            containerBuilder.Populate(services);
+
+            // Register your SignalR hubs.
+            containerBuilder.RegisterHubs(Assembly.GetExecutingAssembly());
+
+            ApplicationContainer = containerBuilder.Build();
+            GlobalHost.DependencyResolver = new AutofacDependencyResolver(ApplicationContainer);
+            return new AutofacServiceProvider(ApplicationContainer);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime appLifetime)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -57,6 +75,7 @@ namespace LaunchTestIO
             app.UseAppBuilder(appBuilder =>
             {
                 appBuilder.Properties["host.AppName"] = "LaunchTestIO";
+                appBuilder.UseAutofacMiddleware(ApplicationContainer);
                 appBuilder.MapSignalR();
             });
 
@@ -92,6 +111,8 @@ namespace LaunchTestIO
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
         }
     }
 }

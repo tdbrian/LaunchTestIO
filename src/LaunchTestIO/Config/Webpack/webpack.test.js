@@ -1,4 +1,4 @@
-﻿var helpers = require('./helpers');
+﻿var helpers = require('../Utils/helpers');
 
 module.exports = {
     devtool: 'inline-source-map',

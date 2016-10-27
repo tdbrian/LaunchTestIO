@@ -11,8 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Ng2Webpack;
 using Owin;
-using Sector7G.config;
 using Autofac.Integration.SignalR;
+using LaunchTestIO.Backend.Authentication;
+using LaunchTestIO.Backend.Users;
+using LaunchTestIO.Config.Database;
 using Microsoft.AspNet.SignalR;
 
 namespace LaunchTestIO
@@ -49,20 +51,57 @@ namespace LaunchTestIO
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
+            // Register identity framework services and also Mongo storage. 
+            services.AddIdentityWithMongoStores(Configuration.GetConnectionString("DefaultConnection"))
+                .AddDefaultTokenProviders();
+
             services.AddMvc();
 
             services.AddWebpack();
 
+            services.AddTransient<IEmailSender, AuthMessageService>();
+            services.AddTransient<ISmsSender, AuthMessageService>();
+
             // Add Autofac
             var containerBuilder = new ContainerBuilder();
-            containerBuilder.RegisterModule<InjectionModule>();
+
+            containerBuilder.RegisterType<LaunchTestIoMongoContext>().As<ILaunchTestIoContext>().SingleInstance();
+            containerBuilder.RegisterType<UsersService>().As<IUsersService>();
+            containerBuilder.RegisterType<UsersMongoDatastore>().As<IUsersDatastore>();
+
             containerBuilder.Populate(services);
 
-            // Register your SignalR hubs.
+            // Register SignalR hubs
             containerBuilder.RegisterHubs(Assembly.GetExecutingAssembly());
 
             ApplicationContainer = containerBuilder.Build();
             GlobalHost.DependencyResolver = new AutofacDependencyResolver(ApplicationContainer);
+
+            var userService = ApplicationContainer.Resolve<IUsersService>();
+            userService.PopulateDefaultAdmin();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = false;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+
+                // Cookie settings
+                options.Cookies.ApplicationCookie.ExpireTimeSpan = TimeSpan.FromDays(150);
+                options.Cookies.ApplicationCookie.LoginPath = "/Account/LogIn";
+                options.Cookies.ApplicationCookie.LogoutPath = "/Account/LogOff";
+
+                // User settings
+                options.User.RequireUniqueEmail = true;
+            });
+
             return new AutofacServiceProvider(ApplicationContainer);
         }
 
@@ -89,6 +128,8 @@ namespace LaunchTestIO
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseIdentity();
 
             app.UseApplicationInsightsExceptionTelemetry();
 

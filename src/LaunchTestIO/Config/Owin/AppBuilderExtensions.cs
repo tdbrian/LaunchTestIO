@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Owin.Builder;
 using Owin;
 
-namespace Sector7G.config
+namespace LaunchTestIO.Config
 {
     public static class AppBuilderExtensions
     {

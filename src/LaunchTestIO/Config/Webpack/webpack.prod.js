@@ -2,7 +2,7 @@
 var webpackMerge = require('webpack-merge');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var commonConfig = require('./webpack.common.js');
-var helpers = require('./helpers');
+var helpers = require('../Utils/helpers');
 
 const ENV = process.env.NODE_ENV = process.env.ENV = 'production';
 

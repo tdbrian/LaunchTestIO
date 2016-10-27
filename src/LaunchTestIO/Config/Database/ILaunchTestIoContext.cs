@@ -2,7 +2,7 @@
 using LaunchTestIO.Backend.Users;
 using MongoDB.Driver;
 
-namespace LaunchTestIO.Config
+namespace LaunchTestIO.Config.Database
 {
     public interface ILaunchTestIoContext
     {

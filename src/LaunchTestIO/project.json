@@ -38,7 +38,10 @@
     "Autofac": "4.1.1",
     "Autofac.Extensions.DependencyInjection": "4.0.0",
     "Autofac.SignalR": "3.0.2",
-    "Autofac.Owin": "4.0.0"
+    "Autofac.Owin": "4.0.0",
+    "Microsoft.AspNet.Identity.Core": "2.2.1",
+    "Microsoft.AspNetCore.Identity": "1.0.0",
+    "Microsoft.AspNetCore.Identity.MongoDB": "1.0.2"
   },
 
   "tools": {

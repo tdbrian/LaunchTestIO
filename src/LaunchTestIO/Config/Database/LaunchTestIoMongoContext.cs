@@ -2,13 +2,13 @@
 using LaunchTestIO.Backend.Users;
 using MongoDB.Driver;
 
-namespace LaunchTestIO.Config
+namespace LaunchTestIO.Config.Database
 {
-    public class LaunchTestIoContext: ILaunchTestIoContext
+    public class LaunchTestIoMongoContext : ILaunchTestIoContext
     {
         public IMongoDatabase Database;
 
-        public LaunchTestIoContext()
+        public LaunchTestIoMongoContext()
         {
             var client = new MongoClient("mongodb://localhost:27017/launch-test");
             Database = client.GetDatabase("launch-test");

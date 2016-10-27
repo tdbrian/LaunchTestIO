@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using LaunchTestIO.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Ng2Webpack;
+using Owin;
+using Sector7G.config;
 
 namespace LaunchTestIO
 {
@@ -41,6 +44,8 @@ namespace LaunchTestIO
             services.AddMvc();
 
             services.AddWebpack();
+
+            services.AddSingleton<ILaunchTestIoContext, LaunchTestIoContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,12 +54,17 @@ namespace LaunchTestIO
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseAppBuilder(appBuilder =>
+            {
+                appBuilder.Properties["host.AppName"] = "LaunchTestIO";
+                appBuilder.MapSignalR();
+            });
+
             app.UseApplicationInsightsRequestTelemetry();
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {

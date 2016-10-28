@@ -1,0 +1,176 @@
+<header class="navbar">
+  <div class="container-fluid">
+    <button class="navbar-toggler hidden-lg-up" type="button" mobile-nav-toggle>&#9776;</button>
+    <a class="navbar-brand" href="#"></a>
+
+    <ul class="nav navbar-nav hidden-md-down">
+      <li class="nav-item">
+        <a class="nav-link navbar-toggler sidebar-toggle" href="#">&#9776;</a>
+      </li>
+      <li class="nav-item p-x-1">
+        <a class="nav-link" href="#">Dashboard</a>
+      </li>
+      <li class="nav-item p-x-1">
+        <a class="nav-link" href="#">Users</a>
+      </li>
+      <li class="nav-item p-x-1">
+        <a class="nav-link" href="#">Settings</a>
+      </li>
+    </ul>
+    <ul class="nav navbar-nav pull-right hidden-md-down">
+      <li class="nav-item">
+        <a class="nav-link" href="#"><i class="icon-bell"></i><span class="tag tag-pill tag-danger">5</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#"><i class="icon-list"></i></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#"><i class="icon-location-pin"></i></a>
+      </li>
+      <li class="nav-item dropdown" dropdown (onToggle)="toggled($event)">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"
+          dropdownToggle>
+          <img src="/img/avatars/6.jpg" class="img-avatar" alt="admin@bootstrapmaster.com">
+          <span class="hidden-md-down">admin</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" dropdownMenu aria-labelledby="simple-dropdown">
+
+          <div class="dropdown-header text-xs-center">
+            <strong>Account</strong>
+          </div>
+
+          <a class="dropdown-item" href="#"><i class="fa fa-bell-o"></i> Updates<span class="tag tag-info">42</span></a>
+          <a class="dropdown-item" href="#"><i class="fa fa-envelope-o"></i> Messages<span class="tag tag-success">42</span></a>
+          <a class="dropdown-item" href="#"><i class="fa fa-tasks"></i> Tasks<span class="tag tag-danger">42</span></a>
+          <a class="dropdown-item" href="#"><i class="fa fa-comments"></i> Comment<span class="tag tag-warning">42</span></a>
+
+          <div class="dropdown-header text-xs-center">
+            <strong>Settings</strong>
+          </div>
+
+          <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Profile</a>
+          <a class="dropdown-item" href="#"><i class="fa fa-wrench"></i> Setting</a>
+          <a class="dropdown-item" href="#"><i class="fa fa-usd"></i> Payments<span class="tag tag-default">42</span></a>
+          <a class="dropdown-item" href="#"><i class="fa fa-file"></i> Projects<span class="tag tag-primary">42</span></a>
+          <div class="divider"></div>
+          <a class="dropdown-item" href="#"><i class="fa fa-shield"></i> Lock account</a>
+          <a class="dropdown-item" href="#"><i class="fa fa-lock"></i> Logout</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link navbar-toggler aside-toggle" href="#">&#9776;</a>
+      </li>
+    </ul>
+
+  </div>
+</header>
+
+<div class="sidebar">
+  <nav class="sidebar-nav">
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" routerLinkActive="active" [routerLink]="['/dashboard']"><i class="icon-speedometer"></i> Dashboard <span class="tag tag-info">NEW</span></a>
+      </li>
+
+      <li class="divider"></li>
+      <li class="nav-title">
+        UI Elements
+      </li>
+      <li class="nav-item nav-dropdown" routerLinkActive="open">
+        <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-puzzle"></i> Components</a>
+        <ul class="nav-dropdown-items">
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/components/buttons']"><i class="icon-puzzle"></i> Buttons</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/components/social-buttons']"><i class="icon-puzzle"></i> Social Buttons</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/components/cards']"><i class="icon-puzzle"></i> Cards</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/components/forms']"><i class="icon-puzzle"></i> Forms</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/components/switches']"><i class="icon-puzzle"></i> Switches</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/components/tables']"><i class="icon-puzzle"></i> Tables</a>
+          </li>
+        </ul>
+      </li>
+      <li class="nav-item nav-dropdown" routerLinkActive="open">
+        <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-star"></i> Icons</a>
+        <ul class="nav-dropdown-items">
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/icons/font-awesome']"><i class="icon-star"></i> Font Awesome</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/icons/simple-line-icons']"><i class="icon-star"></i> Simple Line Icons</a>
+          </li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLinkActive="active" [routerLink]="['/widgets']"><i class="icon-calculator"></i> Widgets <span class="tag tag-info">NEW</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLinkActive="active" [routerLink]="['/charts']"><i class="icon-pie-chart"></i> Charts</a>
+      </li>
+      <li class="divider"></li>
+      <li class="nav-title">
+        Extras
+      </li>
+      <li class="nav-item nav-dropdown">
+        <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-star"></i> Pages</a>
+        <ul class="nav-dropdown-items">
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/login']"><i class="icon-star"></i> Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/register']"><i class="icon-star"></i> Register</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/404']"><i class="icon-star"></i> Error 404</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/pages/500']"><i class="icon-star"></i> Error 500</a>
+          </li>
+        </ul>
+      </li>
+
+    </ul>
+  </nav>
+</div>
+
+<!-- Main content -->
+<main class="main">
+
+  <!-- Breadcrumb -->
+  <ol class="breadcrumb">
+    <app-breadcrumbs></app-breadcrumbs>
+
+    <!-- Breadcrumb Menu-->
+    <li class="breadcrumb-menu">
+      <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+        <a class="btn btn-secondary" href="#"><i class="icon-speech"></i></a>
+        <a class="btn btn-secondary" [routerLink]="['/dashboard']"><i class="icon-graph"></i> &nbsp;Dashboard</a>
+        <a class="btn btn-secondary" href="#"><i class="icon-settings"></i> &nbsp;Settings</a>
+      </div>
+    </li>
+
+  </ol>
+
+  <div class="container-fluid">
+    <router-outlet></router-outlet>
+  </div>
+  <!-- /.conainer-fluid -->
+</main>
+
+<footer class="footer">
+  <span class="text-left">
+        <a href="http://coreui.io">CoreUI</a> &copy; 2016 creativeLabs.
+    </span>
+  <span class="pull-right">
+        Powered by <a href="http://coreui.io">CoreUI</a>
+    </span>
+</footer>

@@ -1,5 +1,4 @@
 ﻿/// <autosync enabled="true" />
-/// <reference path="../App/app.component.js" />
 /// <reference path="../App/app.component.spec.js" />
 /// <reference path="../config/karma/karma.conf.js" />
 /// <reference path="../config/karma/karma-test-shim.js" />

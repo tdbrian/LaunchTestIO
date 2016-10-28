@@ -16,6 +16,9 @@ using LaunchTestIO.Backend.Authentication;
 using LaunchTestIO.Backend.Users;
 using LaunchTestIO.Config.Database;
 using Microsoft.AspNet.SignalR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.MongoDB;
+using MongoDB.Driver;
 
 namespace LaunchTestIO
 {
@@ -59,14 +62,15 @@ namespace LaunchTestIO
 
             services.AddWebpack();
 
-            services.AddTransient<IEmailSender, AuthMessageService>();
-            services.AddTransient<ISmsSender, AuthMessageService>();
+            services.AddTransient<IEmailSender, AuthenticationMessageService>();
+            services.AddTransient<ISmsSender, AuthenticationMessageService>();
 
             // Add Autofac
             var containerBuilder = new ContainerBuilder();
 
             containerBuilder.RegisterType<LaunchTestIoMongoContext>().As<ILaunchTestIoContext>().SingleInstance();
             containerBuilder.RegisterType<UsersService>().As<IUsersService>();
+            containerBuilder.RegisterType<AuthenticationService>();
             containerBuilder.RegisterType<UsersMongoDatastore>().As<IUsersDatastore>();
 
             containerBuilder.Populate(services);
@@ -100,6 +104,9 @@ namespace LaunchTestIO
 
                 // User settings
                 options.User.RequireUniqueEmail = true;
+
+                // Signin settings
+                options.SignIn.RequireConfirmedEmail = true;
             });
 
             return new AutofacServiceProvider(ApplicationContainer);

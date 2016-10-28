@@ -2,7 +2,7 @@
 
 namespace LaunchTestIO.Backend.Authentication
 {
-    public class AuthMessageService : IEmailSender, ISmsSender
+    public class AuthenticationMessageService : IEmailSender, ISmsSender
     {
         public Task SendEmailAsync(string email, string subject, string message)
         {

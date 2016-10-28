@@ -13,14 +13,14 @@ namespace LaunchTestIO.Backend.Users
             _dbContext = dbContext;
         }
 
-        public async Task<bool> HasDefaultAdminUser()
+        public async Task<bool> HasDefaultAdminUser(string email)
         {
-            return await _dbContext.Users.Find(x => x.IsAdmin && x.Deleted == false).AnyAsync();
+            return await _dbContext.Users.Find(x => x.Email == email).AnyAsync();
         }
 
         public async Task<User> GetUser(string email)
         {
-            return await _dbContext.Users.Find(x => x.EmailAddress.Equals(email) && x.Deleted == false).FirstAsync();
+            return await _dbContext.Users.Find(x => x.Email.Equals(email) && x.Deleted == false).FirstAsync();
         }
 
         public async Task AddUser(User user)

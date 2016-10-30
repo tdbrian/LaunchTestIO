@@ -9,11 +9,11 @@ namespace LaunchTestIO.Backend.Users
     public class UsersService: IUsersService
     {
         private readonly IUsersDatastore _userDatastore;
-        private readonly AuthenticationService _authenticationService;
+        private readonly IAuthenticationService _authenticationService;
         private const string AdminEmail = "Admin@setup.test";
         private const string AdminPassword = "Pa55word!";
 
-        public UsersService(IUsersDatastore userDatastore, AuthenticationService authenticationService)
+        public UsersService(IUsersDatastore userDatastore, IAuthenticationService authenticationService)
         {
             _userDatastore = userDatastore;
             _authenticationService = authenticationService;

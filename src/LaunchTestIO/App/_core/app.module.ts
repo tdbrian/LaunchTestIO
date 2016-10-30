@@ -14,6 +14,7 @@ import { BreadcrumbsComponent } from '../_common/components/breadcrumb.component
 import { AsideToggleDirective } from '../_common/directives/aside.directive';
 import { SIDEBAR_TOGGLE_DIRECTIVES } from '../_common/directives/sidebar.directive';
 import { VerticalAlignMiddleDirective } from '../_common/directives/vertical-align-middle.directive';
+import { SignalRService } from '../_common/services/signalr.service';
 
 @NgModule({
     declarations: [
@@ -47,6 +48,7 @@ import { VerticalAlignMiddleDirective } from '../_common/directives/vertical-ali
     ],
     providers: [
         DashboardService,
+        SignalRService,
         { provide: 'Window', useValue: window }
     ],
     bootstrap: [AppComponent]

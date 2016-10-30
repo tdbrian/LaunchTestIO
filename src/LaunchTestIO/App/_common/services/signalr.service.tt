@@ -23,13 +23,12 @@
 
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
-import 'SignalR';
-import 'Jquery';
 import 'lodash';
 import 'core-js/es6';
 
-declare var EventEmitter: any;
-
+declare let $: any;
+declare let Promise: any;
+declare let EventEmitter: any;
 var eventEmitter = new EventEmitter();
 
 ////////////////////
@@ -181,7 +180,7 @@ export class SignalRService {
 		// ReSharper disable once Lambda
 		const wrappedFn = _.wrap(fn, function (func: (...args: any[]) => Promise<T>, ...argsArray: any[]) {
 		    const promise = func.apply(this, argsArray);
-		    return new Promise((resolve, reject) => {
+		    return new Promise((resolve: any, reject: any) => {
                 promise.then(resolve, reject);
             });
 		});

@@ -17,7 +17,7 @@
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
     "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0",
-    "Microsoft.Extensions.Logging": "1.0.0",
+    "Microsoft.Extensions.Logging": "1.1.0-preview2-22561",
     "Microsoft.Extensions.Logging.Console": "1.0.0",
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
@@ -31,17 +31,13 @@
       "type": "build"
     },
     "Ng2Webpack": "1.0.2",
-    "Microsoft.AspNet.SignalR.Core": "2.2.1",
-    "Microsoft.Owin": "3.0.1",
-    "Microsoft.AspNetCore.Owin": "1.0.0",
     "mongocsharpdriver": "2.3.0",
-    "Autofac": "4.1.1",
-    "Autofac.Extensions.DependencyInjection": "4.0.0",
-    "Autofac.SignalR": "3.0.2",
-    "Autofac.Owin": "4.0.0",
     "Microsoft.AspNet.Identity.Core": "2.2.1",
     "Microsoft.AspNetCore.Identity": "1.0.0",
-    "Microsoft.AspNetCore.Identity.MongoDB": "1.0.2"
+    "Microsoft.AspNetCore.Identity.MongoDB": "1.0.2",
+    "Microsoft.AspNetCore.WebSockets": "0.2.0-preview2-22561",
+    "Microsoft.AspNetCore.SignalR.Server": "0.2.0-preview2-22561",
+    "Microsoft.AspNetCore.Mvc.WebApiCompatShim": "1.0.1"
   },
 
   "tools": {

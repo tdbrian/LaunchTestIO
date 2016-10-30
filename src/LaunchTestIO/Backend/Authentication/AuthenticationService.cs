@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using LaunchTestIO.Backend.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.MongoDB;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace LaunchTestIO.Backend.Authentication
 {
-    public class AuthenticationService
+    public class AuthenticationService : IAuthenticationService
     {
         private const string ProviderPhone = "Phone";
         private const string ProviderEmail = "Email";
@@ -29,29 +30,30 @@ namespace LaunchTestIO.Backend.Authentication
             _emailSender = emailSender;
         }
 
-        public async Task Login(string username, string password, bool rememberMe, string email)
+        public async Task<IdentityUser> Login(string password, bool rememberMe, string email)
         {
             var result = await _signInManager.PasswordSignInAsync(email, password, rememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
                 _logger.LogInformation(1, "User logged in.");
-                return;
+                return await _userManager.GetUserAsync(ClaimsPrincipal.Current);
             }
 
             if (result.RequiresTwoFactor)
             {
-                await SendAuthCode(rememberMe, ProviderPhone);
-                return;
+                await SendAuthCode(rememberMe, ProviderEmail);
+                throw new HubException("Two factor authentication required.");
             }
 
             if (result.IsLockedOut)
             {
-                _logger.LogWarning(2, "User account locked out.");
-                return;
+                var msg = "User account locked out.";
+                _logger.LogWarning(2, msg);
+                throw new HubException(msg);
             }
 
             _logger.LogInformation(1, "Invalid login attempt.");
-            throw new Exception("Invalid Login Attempt");
+            throw new HubException("Invalid Login Attempt");
         }
 
         public async Task SendAuthCode(bool rememberMe, string authProviderType)
@@ -62,12 +64,12 @@ namespace LaunchTestIO.Backend.Authentication
             var code = await _userManager.GenerateTwoFactorTokenAsync(user, authProviderType);
             if (string.IsNullOrWhiteSpace(code)) throw new Exception("Invalid 2FA code was generated");
 
-            var message = "Your security code is: " + code;
+            var message = "Your two factor authentication code is: " + code;
 
             switch (authProviderType)
             {
                 case ProviderEmail:
-                    await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), "Security Code", message);
+                    await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), "LaunchTest.io Two Factor Authentication Code", message);
                     break;
                 case ProviderPhone:
                     await _smsSender.SendSmsAsync(await _userManager.GetPhoneNumberAsync(user), message);

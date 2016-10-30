@@ -22,6 +22,6 @@ module.exports = {
     },
 
     plugins: [
-      new webpack.optimize.CommonsChunkPlugin({ name: ['app', 'vendor', 'polyfills'] })
+      new webpack.optimize.CommonsChunkPlugin({ name: ['app', 'vendor', 'polyfills'] }),
     ]
 };

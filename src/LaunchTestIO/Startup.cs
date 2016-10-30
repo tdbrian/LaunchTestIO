@@ -1,31 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using LaunchTestIO.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Ng2Webpack;
-using Owin;
-using Autofac.Integration.SignalR;
 using LaunchTestIO.Backend.Authentication;
 using LaunchTestIO.Backend.Users;
 using LaunchTestIO.Config.Database;
-using Microsoft.AspNet.SignalR;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.MongoDB;
-using MongoDB.Driver;
+using Newtonsoft.Json;
 
 namespace LaunchTestIO
 {
     public class Startup
     {
-        public IContainer ApplicationContainer { get; set; }
-
         public IConfigurationRoot Configuration { get; }
 
         public Startup(IHostingEnvironment env)
@@ -49,7 +38,7 @@ namespace LaunchTestIO
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
@@ -58,31 +47,30 @@ namespace LaunchTestIO
             services.AddIdentityWithMongoStores(Configuration.GetConnectionString("DefaultConnection"))
                 .AddDefaultTokenProviders();
 
+            // SignalR options
+            services.AddSignalR(options =>
+            {
+                options.Hubs.EnableDetailedErrors = true;
+            });
+
+            // Camelcase serializations with custom contract resolver
+            var settings = new JsonSerializerSettings { ContractResolver = new SignalRContractResolver() };
+            var serializer = JsonSerializer.Create(settings);
+            services.Add(new ServiceDescriptor(typeof(JsonSerializer), provider => serializer, ServiceLifetime.Transient));
+
             services.AddMvc();
 
             services.AddWebpack();
 
             services.AddTransient<IEmailSender, AuthenticationMessageService>();
             services.AddTransient<ISmsSender, AuthenticationMessageService>();
+            services.AddTransient<ILaunchTestIoContext, LaunchTestIoMongoContext>();
+            services.AddTransient<IUsersService, UsersService>();
+            services.AddTransient<IAuthenticationService, AuthenticationService>();
+            services.AddSingleton<IUsersDatastore, UsersMongoDatastore>();
 
-            // Add Autofac
-            var containerBuilder = new ContainerBuilder();
-
-            containerBuilder.RegisterType<LaunchTestIoMongoContext>().As<ILaunchTestIoContext>().SingleInstance();
-            containerBuilder.RegisterType<UsersService>().As<IUsersService>();
-            containerBuilder.RegisterType<AuthenticationService>();
-            containerBuilder.RegisterType<UsersMongoDatastore>().As<IUsersDatastore>();
-
-            containerBuilder.Populate(services);
-
-            // Register SignalR hubs
-            containerBuilder.RegisterHubs(Assembly.GetExecutingAssembly());
-
-            ApplicationContainer = containerBuilder.Build();
-            GlobalHost.DependencyResolver = new AutofacDependencyResolver(ApplicationContainer);
-
-            var userService = ApplicationContainer.Resolve<IUsersService>();
-            userService.PopulateDefaultAdmin();
+            // var userService = ApplicationContainer.Resolve<IUsersService>();
+            // userService.PopulateDefaultAdmin();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -108,8 +96,6 @@ namespace LaunchTestIO
                 // Signin settings
                 options.SignIn.RequireConfirmedEmail = true;
             });
-
-            return new AutofacServiceProvider(ApplicationContainer);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -117,13 +103,6 @@ namespace LaunchTestIO
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
-            app.UseAppBuilder(appBuilder =>
-            {
-                appBuilder.Properties["host.AppName"] = "LaunchTestIO";
-                appBuilder.UseAutofacMiddleware(ApplicationContainer);
-                appBuilder.MapSignalR();
-            });
 
             app.UseApplicationInsightsRequestTelemetry();
 
@@ -142,6 +121,10 @@ namespace LaunchTestIO
 
             app.UseStaticFiles();
 
+            app.UseWebSockets();
+
+            app.UseSignalR();
+
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
             if (env.IsDevelopment())
             {
@@ -155,12 +138,10 @@ namespace LaunchTestIO
 
             app.UseMvc(routes =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute("spa-fallback", "{*anything}", new { controller = "Home", action = "Index" });
+                routes.MapWebApiRoute("defaultApi", "api/{controller}/{id?}");
             });
-
-            appLifetime.ApplicationStopped.Register(() => ApplicationContainer.Dispose());
         }
     }
 }
